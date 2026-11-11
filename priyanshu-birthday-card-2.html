@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday Priyanshu 🎂</title>
+<style>
+:root{--bg:#fff4e6;--card:#ffffff;--ink:#2b2140;--sub:#6b5b86;--a:#ff5d8f;--b:#ffb703;--c:#4cc9f0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1630;--card:#2a2043;--ink:#fff4fb;--sub:#c9bce6}}
+:root[data-theme="dark"]{--bg:#1d1630;--card:#2a2043;--ink:#fff4fb;--sub:#c9bce6}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Poppins","Trebuchet MS",system-ui,sans-serif;display:flex;justify-content:center;padding:20px 16px 40px;overflow-x:hidden}
+.wrap{width:100%;max-width:420px;text-align:center}
+.card{background:var(--card);border-radius:28px;padding:28px 22px;box-shadow:0 10px 0 var(--a);border:3px solid var(--ink)}
+h1{font-size:30px;margin:8px 0 4px;line-height:1.15}
+.sub{color:var(--sub);font-size:15px;margin:0 0 18px}
+.emoji{font-size:64px}
+.count{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.box{background:var(--b);color:#2b2140;border-radius:16px;padding:10px 0;width:72px;border:3px solid var(--ink)}
+.box b{display:block;font-size:26px}
+.box span{font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.pass{display:flex;gap:10px;justify-content:center;margin:16px 0}
+.pass input{width:52px;height:60px;text-align:center;font-size:26px;border-radius:14px;border:3px solid var(--ink);background:var(--bg);color:var(--ink)}
+button{font:inherit;font-weight:700;background:var(--a);color:#fff;border:3px solid var(--ink);border-radius:999px;padding:12px 26px;font-size:16px;cursor:pointer;box-shadow:0 4px 0 var(--ink)}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+button.alt{background:var(--c);color:#2b2140}
+.err{color:var(--a);min-height:20px;font-size:14px;margin:4px 0 10px}
+.hide{display:none}
+.letter{background:var(--bg);border-radius:18px;padding:18px;text-align:left;line-height:1.7;font-size:15.5px;margin:16px 0;border:2px dashed var(--sub)}
+.cake{font-size:80px;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(4deg)}}
+.conf{position:fixed;top:-20px;font-size:22px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="card" id="lock">
+  <div class="emoji">🎁</div>
+  <h1>A surprise for Priyanshu</h1>
+  <p class="sub">Birthday card unlocks with a secret code</p>
+  <div class="count" id="count"></div>
+  <p class="sub" id="countMsg"></p>
+  <div class="pass" id="pass">
+    <input inputmode="numeric" maxlength="1" aria-label="digit 1">
+    <input inputmode="numeric" maxlength="1" aria-label="digit 2">
+    <input inputmode="numeric" maxlength="1" aria-label="digit 3">
+    <input inputmode="numeric" maxlength="1" aria-label="digit 4">
+  </div>
+  <div class="err" id="err"></div>
+  <button id="open">Open card 💌</button>
+  <p class="sub" style="margin-top:16px;font-size:13px">Hint: the date of your birthday (DDMM) 😉</p>
+</div>
+
+<div class="card hide" id="main">
+  <div class="cake">🎂</div>
+  <h1>Happy Birthday,<br>Priyanshu! 🎉</h1>
+  <p class="sub">23 November</p>
+  <div class="letter">
+    Dear Priyanshu,<br><br>
+    Happy Birthday! 🥳 Tum jaise dost kisi ko bhi nahi milte. Tumhare saath har din thoda aur fun ho jata hai.<br><br>
+    Ye saal tumhare liye bahut saari khushiyan, achhi chizein aur sab kuch laye jo tum chahte ho. Hamesha aise hi hasate rehna!<br><br>
+    Party pending hai, yaad rakhna 😄<br><br>
+    Your friend ❤️
+  </div>
+  <button class="alt" id="music">▶ Play birthday tune</button>
+  <p class="sub" style="margin-top:14px">
+    <a href="#" id="again" style="color:var(--sub)">🎈 more confetti</a>
+  </p>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var CODE = "2311";
+
+  // ---- countdown to next 23 Nov ----
+  function target(){
+    var n = new Date(), t = new Date(n.getFullYear(), 10, 23, 0, 0, 0);
+    var end = new Date(n.getFullYear(), 10, 24, 0, 0, 0);
+    if (n >= end) t = new Date(n.getFullYear()+1, 10, 23, 0, 0, 0);
+    return t;
+  }
+  function tick(){
+    var now = new Date(), t = target(), d = t - now;
+    var box = document.getElementById("count"), msg = document.getElementById("countMsg");
+    if (d <= 0){
+      box.innerHTML = "";
+      msg.textContent = "It's the big day! 🎉";
+      return;
+    }
+    var days = Math.floor(d/864e5), h = Math.floor(d/36e5)%24, m = Math.floor(d/6e4)%60, s = Math.floor(d/1e3)%60;
+    box.innerHTML = [["Days",days],["Hours",h],["Mins",m],["Secs",s]].map(function(x){
+      return '<div class="box"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';
+    }).join("");
+    msg.textContent = "Countdown to the birthday ⏳";
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ---- passcode ----
+  var inputs = Array.prototype.slice.call(document.querySelectorAll("#pass input"));
+  inputs.forEach(function(el,i){
+    el.addEventListener("input", function(){
+      el.value = el.value.replace(/\D/g,"").slice(0,1);
+      if (el.value && inputs[i+1]) inputs[i+1].focus();
+      if (inputs.every(function(x){return x.value;})) tryOpen();
+    });
+    el.addEventListener("keydown", function(e){
+      if (e.key === "Backspace" && !el.value && inputs[i-1]) inputs[i-1].focus();
+    });
+  });
+  function tryOpen(){
+    var v = inputs.map(function(x){return x.value;}).join("");
+    if (v === CODE){
+      document.getElementById("lock").classList.add("hide");
+      document.getElementById("main").classList.remove("hide");
+      confetti();
+    } else {
+      document.getElementById("err").textContent = "Oops, wrong code 🙈 try again";
+      inputs.forEach(function(x){x.value="";}); inputs[0].focus();
+    }
+  }
+  document.getElementById("open").addEventListener("click", tryOpen);
+
+  // ---- confetti ----
+  function confetti(){
+    var set = ["🎉","🎈","✨","💖","🎊","🍰"];
+    for (var i=0;i<36;i++){
+      var c = document.createElement("div");
+      c.className = "conf";
+      c.textContent = set[i % set.length];
+      c.style.left = Math.random()*100 + "vw";
+      c.style.animationDuration = (2.5 + Math.random()*3) + "s";
+      c.style.animationDelay = (Math.random()*1.2) + "s";
+      document.body.appendChild(c);
+      setTimeout((function(n){return function(){n.remove();};})(c), 7000);
+    }
+  }
+  document.getElementById("again").addEventListener("click", function(e){e.preventDefault();confetti();});
+
+  // ---- tiny birthday tune (WebAudio) ----
+  var playing = false;
+  document.getElementById("music").addEventListener("click", function(){
+    if (playing) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    playing = true;
+    var ctx = new AC(), f = {C:262,D:294,E:330,F:349,G:392,A:440,B:466,H:523};
+    var seq = [["C",.5],["C",.5],["D",1],["C",1],["F",1],["E",2],
+               ["C",.5],["C",.5],["D",1],["C",1],["G",1],["F",2],
+               ["C",.5],["C",.5],["H",1],["A",1],["F",1],["E",1],["D",1],
+               ["B",.5],["B",.5],["A",1],["F",1],["G",1],["F",2]];
+    var t = ctx.currentTime + .1;
+    seq.forEach(function(n){
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle"; o.frequency.value = f[n[0]];
+      g.gain.setValueAtTime(.0001, t);
+      g.gain.exponentialRampToValueAtTime(.25, t+.03);
+      g.gain.exponentialRampToValueAtTime(.0001, t + n[1]*.42);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + n[1]*.45);
+      t += n[1]*.45;
+    });
+    confetti();
+    setTimeout(function(){playing=false; ctx.close();}, (t-ctx.currentTime)*1000+300);
+  });
+})();
+</script>
+</body>
+</html>
